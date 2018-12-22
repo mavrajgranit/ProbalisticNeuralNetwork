@@ -4,15 +4,16 @@ import torch.nn as nn
 #import plotly
 #import plotly.graph_objs as go
 
-#After reading the "Pattern3.pdf" I think we should learn x and Sigma(?)
+#After reading the "Pattern3.pdf" I think we should learn x and Sigma(?) Update: Weirdly enough i dont have access anymore
 
 #RESOURCES
 #http://www.personal.reading.ac.uk/~sis01xh/teaching/CY2D2/Pattern3.pdf
 #http://www.ehu.eus/ccwintco/uploads/8/89/Borja-Parzen-windows.pdf
 
+
 class ParzenWindow(nn.Module):
 
-    def __init__(self, in_features, out_features, std_init=0.4):
+    def __init__(self, in_features, out_features, std_init=1.0):
         super(ParzenWindow, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -28,13 +29,8 @@ class ParzenWindow(nn.Module):
         self.sigma.data.uniform_(mu_range)
 
     def forward(self, input):
-        '''
-        inp = [input]
-        for i in range(self.out_features-1):
-            inp.append(input)
-        inp = torch.stack(inp)'''
         sum = torch.sum((self.mikro-input) ** 2,1)
-        return torch.exp(-sum)/ (2*self.sigma ** 2)
+        return torch.exp(-sum/ (2*self.sigma ** 2))
 
 '''Beatiful Plots
 pw = ParzenWindow(2,2)
